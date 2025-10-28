@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Voter Portal{% endblock %}
+{% block content %}
+
+    <h1 class="display-5 mb-3">👋 Welcome, {{ voter.username }}!</h1>
+    <hr>
+
+    {% if voter.has_voted %}
+        <div class="alert alert-success mt-3" role="alert">
+            ✅ **VOTE CAST!** Your ballot has been successfully recorded.
+        </div>
+    {% elif election_status == 'ACTIVE' %}
+        <div class="alert alert-warning mt-3" role="alert">
+            ⚠️ You have **NOT** voted yet. The deadline is November 2nd at 12:00 PM.
+            <a href="{{ url_for('vote') }}" class="alert-link">Click here to cast your vote now.</a>
+        </div>
+    {% endif %}
+
+    <div class="card p-4 mt-5">
+        {% if election_status == 'CLOSED' %}
+            <h2 class="text-success">🏆 ELECTION CONCLUDED: FINAL RESULTS</h2>
+            <hr>
+            <h4 class="mb-3">Total Votes Cast: <span class="badge bg-secondary">{{ total_votes }}</span></h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Candidate</th>
+                            <th>Party</th>
+                            <th>Votes</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for candidate in candidates %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td><strong>{{ candidate.name }}</strong></td>
+                            <td>{{ candidate.party }}</td>
+                            <td>{{ candidate.vote_count }}</td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    {% set percentage = (candidate.vote_count / total_votes) * 100 %}
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;" aria-valuenow="{{ percentage|int }}" aria-valuemin="0" aria-valuemax="100">
+                                        {{ '%.2f' | format(percentage) }}%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% elif election_status == 'ACTIVE' %}
+            <h5 class="card-title">Election Status</h5>
+            <p>The election is currently **ACTIVE** and running. Results will be visible here after November 2, 2025**.</p>
+            <p class="text-muted small">Access to results is currently restricted for fairness.</p>
+        {% endif %}
+    </div>
+{% endblock %}

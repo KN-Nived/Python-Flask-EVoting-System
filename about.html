@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Contender Information{% endblock %}
+{% block content %}
+
+    <h1 class="mb-4">🗳️ Meet the Contenders</h1>
+    <p class="lead">Review the information below to make an informed decision before casting your vote. Note: The images are linked from the local static folder for presentation.</p>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+        {% for candidate in candidates %}
+            <div class="col">
+                <div class="card h-100 shadow-lg">
+
+                    <div class="text-center p-3 bg-light">
+                        {% if candidate.name == 'Kshipreet Reji' %}
+                            {% set image_file = 'Kshipreet.jpeg' %}
+                        {% elif candidate.name == 'Adheesh Nair' %}
+                            {% set image_file = 'Adheesh.jpeg' %}
+                        {% elif candidate.name == 'Sundar' %}
+                            {% set image_file = 'Sun.jpeg' %}
+                        {% else %}
+                            {% set image_file = 'default.jpg' %}
+                        {% endif %}
+
+                        <img src="{{ url_for('static', filename=image_file) }}"
+                             class="rounded-circle"
+                             alt="{{ candidate.name }}"
+                             style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #007bff;">
+                    </div>
+
+                    <div class="card-body">
+                        <h4 class="card-title text-primary">{{ candidate.name }}</h4>
+                        <h6 class="card-subtitle mb-3 text-muted">Affiliation: {{ candidate.party }}</h6>
+
+                        <p class="card-text">
+                            <strong>Platform Summary:</strong><br>
+                            {{ candidate.information }}
+                        </p>
+
+                        <a href="{{ url_for('vote') }}" class="btn btn-sm btn-outline-success mt-2 w-100">Vote for {{ candidate.name.split(' ')[0] }}</a>
+                    </div>
+                </div> </div> {% endfor %}
+    </div> <div class="mt-5 text-center">
+        <a href="{{ url_for('vote') }}" class="btn btn-lg btn-primary">Proceed to Voting Booth</a>
+    </div>
+
+{% endblock %}
